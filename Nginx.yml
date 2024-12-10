@@ -11,6 +11,12 @@
         name: nginx
         state: present
 
+    - name: Create /etc/nginx directory if missing
+      file:
+        path: /etc/nginx
+        state: directory
+        mode: '0755'
+
     - name: Ensure nginx.conf exists
       stat:
         path: /etc/nginx/nginx.conf
