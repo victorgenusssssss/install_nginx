@@ -1,3 +1,4 @@
+---
 - name: Install Nginx on Ubuntu
   hosts: all
   become: yes
@@ -50,6 +51,28 @@
               include /etc/nginx/conf.d/*.conf;
           }
       when: nginx_conf_stat.stat.exists == False
+
+    - name: Create mime.types file if missing
+      copy:
+        dest: /etc/nginx/mime.types
+        content: |
+          types {
+              text/html                           html htm shtml;
+              text/css                            css;
+              text/xml                            xml;
+              image/gif                           gif;
+              image/jpeg                          jpeg jpg;
+              application/javascript              js;
+              application/json                    json;
+              application/xml                     xml;
+              application/xhtml+xml               xhtml;
+              image/png                           png;
+              application/octet-stream            bin exe dll;
+          }
+        owner: root
+        group: root
+        mode: '0644'
+      when: not ansible_facts.files | selectattr('path', 'equalto', '/etc/nginx/mime.types') | list
 
     - name: Start Nginx
       service:
